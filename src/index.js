@@ -129,9 +129,6 @@ module.exports = class WebpackQINIUOSSPlugin {
     return Promise.all(_.map(files, (file) => {
       file.$retryTime = 0
       const uploadName = `${this.calcPrefix()}/${file.name}`.replace('//', '/')
-      if (file.name.indexOf('main') !== -1) {
-        console.log(file)
-      }
       // 先检测是否存在, 不存在则上传 TODO: 检测过程的日志打印
       if (this.config.existCheck !== true) {
         return this.uploadFile(file, i++, files, compilation, uploadName)
@@ -142,7 +139,6 @@ module.exports = class WebpackQINIUOSSPlugin {
             limit: 50,
           }, (err, respBody, respInfo) => {
             if (err) {
-              console.log(err);
               self.uploadFile(file, i++, files, compilation, uploadName)
               .then((...rest) => resolve(rest))
               .catch(err => reject(err))
@@ -162,8 +158,7 @@ module.exports = class WebpackQINIUOSSPlugin {
                 .catch(err => reject(err))
               }
             } else {
-              console.log(respInfo.statusCode);
-              console.log(respBody);
+              reject(respBody);
             }
           })
         })
@@ -174,9 +169,6 @@ module.exports = class WebpackQINIUOSSPlugin {
     return new Promise((resolve, reject) => {
       const fileCount = files.length
       getFileContentBuffer(file, this.config.gzip).then((contentBuffer) => {
-        console.log(contentBuffer)
-        const opt = this.getOptions(this.config.gzip)
-        const self = this
         const _uploadAction = () => {
           file.$retryTime++
           log(`开始上传 ${idx}/${fileCount}: ${file.$retryTime > 1 ? '第' + (file.$retryTime - 1) + '次重试' : ''}`, uploadName)
@@ -228,7 +220,6 @@ module.exports = class WebpackQINIUOSSPlugin {
     const matched = {}
     const keys = Object.keys(compilation.assets)
     for (let i = 0; i < keys.length; i++) {
-      console.log(this.config.includeDir)
       const includeFlag = this.config.includeDir.length > 0 ? this.config.includeDir.find(n => keys[i].startsWith(n)) : true
       const excludeFlag = this.config.exclude.test(keys[i])
       if (includeFlag && !excludeFlag) matched[keys[i]] = compilation.assets[keys[i]]
