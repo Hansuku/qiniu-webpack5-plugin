@@ -1,6 +1,6 @@
 {
   "name": "qiniu-webpack5-plugin",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -23,5 +23,6 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1",
     "zlib": "^1.0.5"
-  }
+  },
+  "keywords": ["webpack5", "qiniu", "uploader"]
 }
